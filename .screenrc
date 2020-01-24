@@ -1,0 +1,212 @@
+#
+startup_message off
+
+# ===============================================================
+# Messages
+# ===============================================================
+# There are two kinds of messages:  "activity" a a percent sign and is then followed by one
+# of the following letters: aAcCdDfFhHlmMnstuwWyY
+# The meta strings usually refer to the current
+# date and time or to a window title or number.
+# There are also some specials like embedded branches (with %?),
+# color codes (with %{xy}) and padding (with %=, %<, %>).
+# you can find their description in the manual in section
+# "STRING ESCAPES":
+#  %%      percent sign (the escape character itself)
+#  %a      either 'am' or 'pm' - according to the current time
+#  %A      either 'AM' or 'PM' - according to the current time
+#  %c      current time HH:MM in 24h format
+#  %C      current time HH:MM in 12h format
+#  %d      day number - number of current day
+#  %D      Day's name - the weekday name of the current day
+#  %f      flags of the window
+#  %F      sets %? to true if the window has the focus
+#  %h      hardstatus of the window
+#  %H      hostname of the system
+#  %l      current load of the system
+#  %m      month number
+#  %M      month name
+#  %n      window number
+#  %s      seconds
+#  %t      window title
+#  %u      all other users on this window
+#  %w      all window numbers and names.
+#  %-w     all window numbers up to the current window
+#  %+w     all window numbers after the current window
+#  %W      all window numbers and names except the current one
+#  %y      last two digits of the year number
+#  %Y      full year number
+
+# special xterm hardstatus: use the window title.
+termcapinfo xterm 'hs:ts=\E]2;:fs=\007:ds=\E]2;screen\007'
+terminfo xterm 'hs:ts=\E]2;:fs=\007:ds=\E]2;screen\007'
+
+# gives you titles and numbers of screens at the bottom
+# hardstatus alwayslastline "%w"
+# hardstatus off
+# hardstatus alwayslastline
+# hardstatus string "%H - %n:%t%? - %h%?"
+# hardstatus string "%h%?" # pavlomv@dnestar99
+# hardstatus alwayslastline "%w"
+
+# hardstatus alwayslastline "%?%{yk}%-Lw%?%{wb}%n*%f %t%?(%u)%?%?%{yk}%+Lw%?"
+# hardstatus alwayslastline "%{rk}%=%c:%s %Y-%m-%d"
+# hardstatus alwayslastline "%{gk}%c:%s %{yk}%D %M %d %{wk}%?%-Lw%?%{bw}%n*%f %t%?(%u)%?%{wk}%?%+Lw%?"
+hardstatus alwayslastline "%{gk}%c %{yk}%D %M %d %{wk}%?%-Lw%?%{bw}%n*%f %t%?(%u)%?%{wk}%?%+Lw%?"
+
+# termcapinfo xterm*|rxvt*|kterm*|Eterm* hs:ts=\E]0;:fs=\007:ds=\E]0;\007
+#defflow on # will force screen to process ^S/^Q
+
+deflogin on
+#autodetach off
+
+vbell on
+vbell_msg "   Ring  ----  Ring!!  "
+
+# all termcap entries are now duplicated as terminfo entries.
+# only difference should be the slightly modified syntax, and check for
+# terminfo entries, that are already corected in the database.
+# 
+# G0 	we have a SEMI-GRAPHICS-CHARACTER-MODE
+# WS	this sequence resizes our window.
+# cs    this sequence changes the scrollregion
+# hs@	we have no hardware statusline. screen will only believe that
+#       there is a hardware status line if hs,ts,fs,ds are all set.
+# ts    to statusline
+# fs    from statusline
+# ds    delete statusline
+# al    add one line
+# AL    add multiple lines
+# dl    delete one line
+# DL    delete multiple lines
+# ic    insert one char (space)
+# IC    insert multiple chars
+# nx    terminal uses xon/xoff
+
+# termcap  facit|vt100|xterm LP:G0
+# terminfo facit|vt100|xterm LP:G0
+
+#the vt100 description does not mention "dl". *sigh*
+# termcap  vt100 dl=5\E[M
+# terminfo vt100 dl=5\E[M
+
+#facit's "al" / "dl"  are buggy if the current / last line
+#contain attributes...
+# termcap  facit al=\E[L\E[K:AL@:dl@:DL@:cs=\E[%i%d;%dr:ic@
+# terminfo facit al=\E[L\E[K:AL@:dl@:DL@:cs=\E[%i%p1%d;%p2%dr:ic@
+
+# make sun termcap/info better
+# termcap  sun 'up=^K:AL=\E[%dL:DL=\E[%dM:UP=\E[%dA:DO=\E[%dB:LE=\E[%dD:RI=\E[%dC:IC=\E[%d@:WS=1000\E[8;%d;%dt'
+# terminfo sun 'up=^K:AL=\E[%p1%dL:DL=\E[%p1%dM:UP=\E[%p1%dA:DO=\E[%p1%dB:LE=\E[%p1%dD:RI=\E[%p1%dC:IC=\E[%p1%d@:WS=\E[8;%p1%d;%p2%dt$<1000>'
+
+# xterm understands both im/ic and doesn't have a status line.
+# Note: Do not specify im and ic in the real termcap/info file as
+# some programs (e.g. vi) will (no,no, may (jw)) not work anymore.
+# termcap  xterm|fptwist hs@:cs=\E[%i%d;%dr:im=\E[4h:ei=\E[4l
+# terminfo xterm|fptwist hs@:cs=\E[%i%p1%d;%p2%dr:im=\E[4h:ei=\E[4l
+
+# Long time I had this in my private screenrc file. But many people seem to want it (jw):
+# we do not want the width to change to 80 characters on startup:
+# on suns, /etc/termcap has :is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l:
+# termcap xterm 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
+# terminfo xterm 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
+
+#
+# Do not use xterms alternate window buffer. 
+# This one would not add lines to the scrollback buffer.
+# termcap xterm|xterms|xs ti=\E7\E[?47l
+# terminfo xterm|xterms|xs ti=\E7\E[?47l
+
+# make hp700 termcap/info better
+# termcap  hp700 'Z0=\E[?3h:Z1=\E[?3l:hs:ts=\E[62"p\E[0$~\E[2$~\E[1$}:fs=\E[0}\E[61"p:ds=\E[62"p\E[1$~\E[61"p:ic@'
+# terminfo hp700 'Z0=\E[?3h:Z1=\E[?3l:hs:ts=\E[62"p\E[0$~\E[2$~\E[1$}:fs=\E[0}\E[61"p:ds=\E[62"p\E[1$~\E[61"p:ic@'
+
+# wyse-75-42 must have defflow control (xo = "terminal uses xon/xoff")
+# (nowadays: nx = padding doesn't work, have to use xon/off)
+# essential to have it here, as this is a slow terminal.
+# termcap wy75-42 nx:xo:Z0=\E[?3h\E[31h:Z1=\E[?3l\E[31h
+# terminfo wy75-42 nx:xo:Z0=\E[?3h\E[31h:Z1=\E[?3l\E[31h
+
+#remove some stupid / dangerous key bindings
+bind ^k
+#bind L
+bind ^\
+#make them better
+bind \\ quit
+bind K kill
+bind I login on
+bind O login off
+bind } history
+
+# bind the space key to the command that displays a list of windows
+# (so that the command usually invoked by "C-a C-w" would also be available as  "C-a  space").
+bind ' ' windows
+
+# remove  the  default  kill binding from "C-a C-k" and "C-a k". "C-a K" is then bound to the kill command.
+bind ^k
+bind k
+bind K kill
+
+term xterm
+defscrollback 20000
+defutf8 on
+
+# Bind  "C-F"  to  the command "create a window with a TELNET connection to foobar",
+bind F screen -h 20000 ssh dnestar99
+bind B screen -h 20000 '/bin/vi ~/docs/daily/`date +%m.%d.%y`.txt'
+bind H hardstatus alwayslastline '%{gk}%c %{yk}%D %M %d %{wk}%?%-Lw%?%{bw}%n*%f %t%?(%u)%?%{wk}%?%+Lw%?'
+# Bind "escape" to the command that creates  an  non-login window with a.k.a.
+# "root" in slot #9, with a superuser shell  and  a  scrollback  buffer  of  1000 lines.
+## bind \033 screen -ln -t root -h 1000 9 su
+
+
+# 030331 backtick is a new command in screen version >=3.9.15
+# 030330 use the hardstatus line to show the:
+# * latest news of the IT ticker at heise.de [german!]:
+#  backtick 1 1200 1200 heise
+# * ipaddr of eth0
+#  backtick 2 1200 1200 ipadr
+# * external ipaddr of vpn-client
+#  backtick 3 1200 1200 ipadr_vpn
+
+# hardstatus alwayslastline "%{bw}%1`%= "
+# hardstatus alwayslastline "%{bw}%1`%= %{+b ky}| %c:%s |%{+b rw} ip: %2` | vpn: %3`"
+#                                  |                          |          |
+#                                  heise (script in ~/bin/)   |          ipadr_vpn (script in ~/bin/)
+#                                                             |
+#                                                             ipadr (script in ~/bin/)
+#
+# Here is how to send screenrc command to running screen session (set the hardstatus line):
+#
+# $ screen -ls
+# There are screens on:
+# 	5817.SG	(Attached)
+# 	12093.movies	(Detached)
+# 	4854.local1	(Detached)
+# 	5717.local	(Detached)
+# 	4 Sockets in /var/run/screen/S-misha.
+#
+# $ screen -S local1 -X caption always '%{gk}%c %{yk}%D %M %d %{wk}%?%-Lw%?%{bw}%n*%f %t%?(%u)%?%{wk}%?%+Lw%?'
+#
+#
+# And here is the script to set the xterm title bar with [screen name]:window_name
+# #!/bin/bash
+#
+# SCREENNAME=$(echo $STY|awk -F. '{print $2}')
+# printf "Setting titlebar to $SCREENNAME\n"
+# #[ $TERM = "screen" ] && {
+#         # below will wotk in PuTTY, but not in GNOME Terminal
+#         printf "\033k${1%%.*}\033\\"
+#         screen -S $STY -X hardstatus ignore # will send the hardstatus to the GNOME title bar
+#         screen -S $STY -X hardstatus string " ... [$SCREENNAME] : %t"
+#                 #}
+#
+#                 # ~/bin/screen -X hardstatus string "$SCREENNAME%? - $STY%?"
+#                 # printf %bk%s%b%b \\033 "${Screenname: STY}" \\033 \\0134
+#
+# Do not freeze all windows if one session dies
+nonblock on
+# caption always "%{gk}%c:%s %{yk}%M%d %{wk}%?%-Lw%?%{bw}%n*%f %t%?(%u)%?%{wk}%?%+Lw%?"
+hardstatus ignore
+caption always "%{gk}%c %{yk}%D %M %d %{wk}%?%-Lw%?%{bw}%n*%f %t%?(%u)%?%{wk}%?%+Lw%?"
+shelltitle '$ |'
